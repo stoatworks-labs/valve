@@ -14,7 +14,8 @@
 > float precision while RGB turns it by half a radian; Composite's chroma
 > gain follows f′(Y) up a modulated staircase. Eight negative controls and
 > six one-character mutants prove the checks can fail. It has **never been
-> loaded into Resolume**. It is loaded by [oxbow](https://github.com/stoatworks-labs/oxbow),
+> loaded into Resolume on macOS**; on Windows it passed all nine of the fleet
+> Arena gate's checks. On macOS it is loaded by [oxbow](https://github.com/stoatworks-labs/oxbow),
 > which is a real FFGL host and is not Resolume. See [Status](#status).
 
 The picture through a valve amplifier — run it like a guitar through an
@@ -129,12 +130,17 @@ only.
 
 ### Not established
 
-It has **never been loaded into Resolume**, on either platform. Everything above
-was compiled, rendered and measured offline against the real plugin class in a
-headless CGL context, plus an `oxbow` load. How it looks on real footage at a
-show, how twenty-three controls read in Arena's inspector, and whether a 10 ms
-table solve is noticed while dragging Bias are untested. It has never been
-built on Windows. Koren's models are fits to published curves, good to a few per
+It has **never been loaded into Resolume on macOS**. Everything above was
+compiled, rendered and measured offline against the real plugin class in a
+headless CGL context, plus an `oxbow` load. On Windows, a build of this source
+passed all 9 of the fleet Arena gate's checks on win-lab (Resolume Arena 7.27.1,
+Mesa llvmpipe, no GPU, 2026-10-04): it loads from Extra Effects, registers as
+`SW Valve` / `VA01` / effect, all 30 host controls match the declaration (the two
+names at exactly 16 characters arrive whole), it renders, all 25 adjustable
+controls move the picture, and Arena's log stays clean. Software rendering says
+nothing about a GPU or about speed. How it looks on real footage at a show, how
+the controls read in Arena's inspector on macOS, and whether a 10 ms table solve
+is noticed while dragging Bias are untested. Koren's models are fits to published curves, good to a few per
 cent; the circuit values are typical guitar-amplifier ones, not any one
 amplifier's. The model is memoryless: the coupling capacitors' blocking, the
 Miller capacitance that would smear a 12AX7's output horizontally (and take a

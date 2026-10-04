@@ -30,6 +30,9 @@ push-pull pair of EL34s, 1.2 V of drive, resting at 0.3.*
 > make those checks fail, and all 23 controls are shown to change the picture. It has **never
 > been loaded into Resolume on macOS** — the one host it has run in there is the fleet's own
 > test host, `oxbow`, for 120 frames.
+> On Windows, a build of v0.1.0 loads, registers and renders in Resolume Arena 7.27.1, with every
+> control matching what the plugin declares and all 25 adjustable controls moving the picture —
+> on software rendering, so that says nothing about a GPU.
 > Try it on a spare layer before you put it in a show.
 >
 > This codebase was created with AI assistance, directed and reviewed by a human author.

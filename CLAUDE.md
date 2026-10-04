@@ -71,7 +71,8 @@ the chain (`Chain.cpp`), the library GLSL (`Shaders.cpp`) or the parameter enum.
   masters in stoatworks-backend, never these. "Commit" = commit **and** push.
 
 ## Not done yet
-- Never loaded into Resolume on macOS (oxbow selftest only). No OpenFX port, no
+- Never loaded into Resolume on macOS (oxbow selftest only); on Windows the fleet
+  Arena gate passed 9/9 on win-lab (plugin-bench `arena/expect/valve.json`). No OpenFX port, no
   browser demo. The user guide is `docs/USER-GUIDE.md`; the PDF and the site page are
   generated from it by the website's `build_guides.py valve`.
 - Time-domain effects (Miller smear, coupling-capacitor blocking, supply sag, the
