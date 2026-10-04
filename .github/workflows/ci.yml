@@ -82,7 +82,7 @@ jobs:
         timeout-minutes: 25
         run: python3 tools/sweep.py --binary build/vatest --size 160x90 --jobs 2 --allow-no-gl
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: valve-macos-arm64
           path: build/*.bundle
@@ -109,7 +109,7 @@ jobs:
       - name: Build
         run: cmake --build build --config Release --parallel
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: valve-windows-x86_64
           path: build/Release/*.dll
