@@ -61,6 +61,7 @@
 #include <zlib.h>
 
 #include <algorithm>
+#include <cctype>
 #include <array>
 #include <chrono>
 #include <cmath>
@@ -551,7 +552,7 @@ void quiet( Valve& p )
 	set( p, "Master", sliderForMaster( 1.0 ) );
 	set( p, "Power Bias", sliderForIdle( 0.7 ) );
 	set( p, "Chroma Stages", 0 );
-	set( p, "Chroma Power Stage", 0 );
+	set( p, "Chroma Pwr Stage", 0 );
 	set( p, "Output", static_cast< float >( vchain::Output::Plate ) );
 	set( p, "Polarity", 1 );
 	set( p, "Show Curve", 0 );
@@ -1542,7 +1543,7 @@ int runHue( int W, int H, int perturb )
 	const std::vector< float > img = rig.run(
 		picture, { { "Signal", 1 }, { "Output", static_cast< float >( vchain::Output::Unity ) }, { "Polarity", 0 }, { "Stages", 0 },
 		           { "Power Stage", 0 }, { "Chroma Stages", 1 }, { "Chroma Preamp", model::k12AX7 }, { "Chroma Bias", sliderForBias( 0.5 ) },
-		           { "Chroma Drive", slider }, { "Chroma Power Stage", 0 } } );
+		           { "Chroma Drive", slider }, { "Chroma Pwr Stage", 0 } } );
 
 	//The model's describing function, normalised as Unity normalises.
 	const Stated& v = kStatedPreamps[ model::k12AX7 ];
@@ -1757,7 +1758,7 @@ int runDg( int W, int H, int perturb )
 	{
 		Knobs yc = composite;
 		for( const auto& k : Knobs { { "Signal", 1 }, { "Chroma Stages", 1 }, { "Chroma Preamp", model::k12AX7 }, { "Chroma Drive", slider },
-		                             { "Chroma Bias", sliderForBias( 0.5 ) }, { "Chroma Power Stage", 0 } } )
+		                             { "Chroma Bias", sliderForBias( 0.5 ) }, { "Chroma Pwr Stage", 0 } } )
 			yc.push_back( k );
 		const std::vector< float > img = rig.run( staircase( small ), yc );
 		double y, aRef, worst = 0.0;
@@ -1817,7 +1818,7 @@ int runPolarity( int W, int H, int perturb )
 	{
 		const std::vector< float > img = rig.run(
 			picture, { { "Signal", 1 }, { "Polarity", static_cast< float >( polarity ) }, { "Stages", 0 }, { "Power Stage", 0 }, { "Chroma Stages", 1 },
-			           { "Chroma Drive", sliderForDrive( 1.0 ) }, { "Chroma Power Stage", 0 }, { "Output", 0 } } );
+			           { "Chroma Drive", sliderForDrive( 1.0 ) }, { "Chroma Pwr Stage", 0 }, { "Output", 0 } } );
 		double worst = 0.0;
 		for( int j = 0; j < 6; ++j )
 		{
@@ -1853,7 +1854,7 @@ int runIdentity( int W, int H, int perturb )
 		{
 			const std::vector< float > img = rig.run(
 				picture, { { "Signal", static_cast< float >( signal ) }, { "Output", static_cast< float >( output ) }, { "Polarity", 0 }, { "Stages", 0 },
-				           { "Power Stage", 0 }, { "Chroma Stages", 0 }, { "Chroma Power Stage", 0 } } );
+				           { "Power Stage", 0 }, { "Chroma Stages", 0 }, { "Chroma Pwr Stage", 0 } } );
 			double worst = 0.0;
 			for( size_t i = 0; i < img.size(); ++i )
 				worst = std::max( worst, static_cast< double >( std::fabs( img[ i ] - picture[ i ] ) ) );
@@ -1951,7 +1952,7 @@ std::vector< RefSetting > referenceSettings()
 		                                        { "Power Valve", 1 }, { "Drive", sliderForDrive( 2.0 ) }, { "Master", sliderForMaster( 0.2 ) } } },
 		{ "Y/C: 12AX7 luma rest 0.7, 2 x 12AU7 chroma", { { "Signal", 1 }, { "Output", 0 }, { "Polarity", 0 }, { "Rest Level", 0.7f }, { "Stages", 1 }, { "Drive", sliderForDrive( 2.0 ) },
 		                                         { "Power Stage", 0 }, { "Chroma Stages", 2 }, { "Chroma Preamp", 2 }, { "Chroma Drive", sliderForDrive( 20.0 ) },
-		                                         { "Chroma Power Stage", 0 } } },
+		                                         { "Chroma Pwr Stage", 0 } } },
 		{ "Composite: 12AX7, EL34 pair, rest 0.3", { { "Signal", 2 }, { "Output", 1 }, { "Polarity", 0 }, { "Rest Level", 0.3f }, { "Stages", 1 }, { "Drive", sliderForDrive( 3.0 ) },
 		                                          { "Power Stage", 2 }, { "Master", sliderForMaster( 0.1 ) } } },
 	};
@@ -2435,12 +2436,21 @@ int runModel( int perturb )
 //---------------------------------------------------------------------------
 int runNames()
 {
+	//A host gets 16 characters of a parameter's name, and Arena addresses
+	//parameters by that name lower-cased with its spaces removed: two names
+	//that reduce to one address are one parameter there.
 	Valve plugin;
-	std::set< std::string > seen;
+	std::set< std::string > seen, addresses;
 	int bad = 0;
 	for( const NamedParameter& p : listParameters( plugin ) )
-		if( p.name.size() > 20 || !seen.insert( p.name ).second )
+	{
+		std::string address;
+		for( char c : p.name )
+			if( c != ' ' )
+				address += static_cast< char >( std::tolower( static_cast< unsigned char >( c ) ) );
+		if( p.name.size() > 16 || !seen.insert( p.name ).second || !addresses.insert( address ).second )
 			++bad;
+	}
 
 	//The name the host reads: plugMain's info block, 16 bytes, not
 	//null-terminated.
@@ -2453,7 +2463,7 @@ int runNames()
 		id.assign( block->PluginUniqueID, 4 );
 	}
 	return report( bad == 0 && block && name == "SW Valve" && id == "VA01" && block->PluginType == FF_EFFECT,
-	               "names: %zu parameters, unique; the host reads '%s' / %s / %s", seen.size(), name.c_str(), id.c_str(),
+	               "names: %zu parameters, unique as host addresses and within 16 characters; the host reads '%s' / %s / %s", seen.size(), name.c_str(), id.c_str(),
 	               block && block->PluginType == FF_EFFECT ? "effect" : "not an effect" );
 }
 

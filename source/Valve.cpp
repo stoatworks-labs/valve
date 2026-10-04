@@ -160,10 +160,16 @@ Valve::Valve()
 void Valve::declareChain( FFUInt32 first, const char* prefix )
 {
 	//The SDK copies a parameter's name into its own std::string (ParamInfo),
-	//so a temporary is enough.
+	//so a temporary is enough. A host is handed only 16 characters of a
+	//parameter's name (Arena addresses parameters by them), so a prefixed
+	//chain says "Pwr" where the main one says "Power": "Chroma Power Stage"
+	//would arrive as "Chroma Power Sta".
 	const std::string p = prefix;
 	auto name = [ & ]( const char* base ) {
-		return p + base;
+		std::string b = base;
+		if( !p.empty() && b.rfind( "Power ", 0 ) == 0 )
+			b = "Pwr " + b.substr( 6 );
+		return p + b;
 	};
 
 	SetParamInfo( first + kStagesAt, name( "Stages" ).c_str(), FF_TYPE_INTEGER, params[ first + kStagesAt ] );

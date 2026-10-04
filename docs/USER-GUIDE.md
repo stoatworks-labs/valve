@@ -192,9 +192,10 @@ crossover step; hot fills it in.
 ## The Chroma group
 
 The chroma's own amplifier, used only in **Y/C**: the same eight controls — **Chroma Stages**,
-**Chroma Preamp**, **Chroma Drive**, **Chroma Bias**, **Chroma Power Stage**, **Chroma Power
-Valve**, **Chroma Master**, **Chroma Power Bias** — with the same ranges. The defaults are one
-gentle 12AU7 stage at 10 V and no power stage.
+**Chroma Preamp**, **Chroma Drive**, **Chroma Bias**, **Chroma Pwr Stage**, **Chroma Pwr
+Valve**, **Chroma Master**, **Chroma Pwr Bias** — with the same ranges. ("Pwr", because a host
+is handed only sixteen characters of a control's name.) The defaults are one gentle 12AU7 stage
+at 10 V and no power stage.
 
 Chroma Drive here is the volts for a chroma amplitude of 1. The largest chroma a legal colour has
 is about 0.63 (fully saturated red and cyan), so 10 V of Chroma Drive swings the grid about ±6 V.

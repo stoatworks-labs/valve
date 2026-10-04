@@ -52,16 +52,16 @@ FRAMES = 1
 # (The plugin is memoryless: one frame is every frame, and --frames is
 # accepted and ignored.)
 CHROMA = {"Signal": 1}
-CHROMA_POWER = {"Signal": 1, "Chroma Power Stage": 2}
+CHROMA_POWER = {"Signal": 1, "Chroma Pwr Stage": 2}
 CONTEXT = {
     "Chroma Stages": CHROMA,
     "Chroma Preamp": CHROMA,
     "Chroma Drive": CHROMA,
     "Chroma Bias": CHROMA,
-    "Chroma Power Stage": CHROMA,
-    "Chroma Power Valve": CHROMA_POWER,
+    "Chroma Pwr Stage": CHROMA,
+    "Chroma Pwr Valve": CHROMA_POWER,
     "Chroma Master": CHROMA_POWER,
-    "Chroma Power Bias": CHROMA_POWER,
+    "Chroma Pwr Bias": CHROMA_POWER,
     "Polarity": {"Stages": 1, "Power Stage": 0},
 }
 
