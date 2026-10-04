@@ -127,7 +127,7 @@ cancellation and mismatch linearity; crossover's centre slope and notch depth;
 Y/C hue and describing function; Composite DG and luma shift; polarity; identity;
 the GPU against the CPU's run of the tables, and the tables against the harness's
 independent valves; the overlay; the model offline; 8 negative controls; 6
-mutants; 23 live controls; universal bundle; oxbow probe and selftest.
+mutants; 24 live controls; universal bundle; oxbow probe and selftest.
 
 ### Mutation record (tools/mutate.sh)
 

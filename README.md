@@ -116,7 +116,7 @@ Numbers below are at 1280×720.
 | `--model` | the eight valves are Koren's `Tube.lib` parameter for parameter; his law restated agrees to rounding; every operating point, load line and bias against the harness's own bisection solves; each table's rest is its centre node and reads exactly 0, its grid-current knee is on a node, and it reaches a kilovolt each way |
 | `--negative` | eight negative controls from six perturbed models — no grid current (against `--knee` and `--reference`), an undriven half, each half on its own load line, chroma as baseband U and V, the subcarrier round the valve, a 12AX7 with μ = 10 (against `--gain` and `--model`) — each **fails** its check, on the physics: without grid current the knee's ratio reads 1.00, not 0.029 |
 | mutation | six one-character mutants of the shipped GLSL and C++ (`tools/mutate.sh`), each caught |
-| `tools/sweep.py` | all **23** controls measurably change the picture |
+| `tools/sweep.py` | all **24** controls measurably change the picture |
 | the bundle | universal (`x86_64 arm64`), exports `plugMain`, ad-hoc signs; `oxbow` reports `SW Valve` / `VA01` / `effect` and renders 120 frames through `plugMain` |
 
 Render cost, GPU timer queries, median of 60 frames, on a GPU shared with
@@ -136,8 +136,8 @@ headless CGL context, plus an `oxbow` load. On Windows, a build of this source
 passed all 9 of the fleet Arena gate's checks on win-lab (Resolume Arena 7.27.1,
 Mesa llvmpipe, no GPU, 2026-10-04): it loads from Extra Effects, registers as
 `SW Valve` / `VA01` / effect, all 30 host controls match the declaration (the two
-names at exactly 16 characters arrive whole), it renders, all 25 adjustable
-controls move the picture, and Arena's log stays clean. Software rendering says
+names at exactly 16 characters arrive whole), it renders, every control (and Resolume's own
+Opacity: 25) moves the picture, and Arena's log stays clean. Software rendering says
 nothing about a GPU or about speed. How it looks on real footage at a show, how
 the controls read in Arena's inspector on macOS, and whether a 10 ms table solve
 is noticed while dragging Bias are untested. Koren's models are fits to published curves, good to a few per

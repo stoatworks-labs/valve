@@ -27,11 +27,11 @@ push-pull pair of EL34s, 1.2 V of drive, resting at 0.3.*
 > a cold pair's crossover notch has exactly the model's depth; Y/C keeps every hue to float
 > precision while RGB through the same valve turns hue by up to 0.58 rad; and Composite's chroma
 > gain follows the curve's slope up a modulated staircase. Eight deliberate faults are shown to
-> make those checks fail, and all 23 controls are shown to change the picture. It has **never
+> make those checks fail, and all 24 controls are shown to change the picture. It has **never
 > been loaded into Resolume on macOS** — the one host it has run in there is the fleet's own
 > test host, `oxbow`, for 120 frames.
 > On Windows, a build of v0.1.0 loads, registers and renders in Resolume Arena 7.27.1, with every
-> control matching what the plugin declares and all 25 adjustable controls moving the picture —
+> control matching what the plugin declares and every one of them moving the picture —
 > on software rendering, so that says nothing about a GPU.
 > Try it on a spare layer before you put it in a show.
 >

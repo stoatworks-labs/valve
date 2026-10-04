@@ -40,7 +40,7 @@ the chain (`Chain.cpp`), the library GLSL (`Shaders.cpp`) or the parameter enum.
   against a perturbed model (bits in `Valves.h`).
 - What CI runs: `--offline`, `tools/check-shaders.sh`, and the rendered checks with
   `--allow-no-gl`.
-- No dead controls: `python3 tools/sweep.py` (23 parameters).
+- No dead controls: `python3 tools/sweep.py` (24 parameters).
 - Cost: `--bench` (GPU timer queries at 720p/1080p/4K, and a table solve on the CPU).
 
 ## Notes
