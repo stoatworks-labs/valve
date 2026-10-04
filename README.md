@@ -77,6 +77,18 @@ the picture's transfer, the magenta one (Y/C) the chroma's amplitude, and in
 RGB a mismatch draws three. Rendered by `vatest`; the labels were added
 afterwards.</sub>
 
+[![Valve — overdrive your video through a valve guitar amp, for Resolume](docs/video-thumb.png)](https://www.youtube.com/watch?v=DM2kHbvMlJw)
+
+*[Watch it](https://www.youtube.com/watch?v=DM2kHbvMlJw) — 58 seconds:
+Drive from clean to fuzz, the 12AX7-for-12AU7 swap, one preamp stage to four,
+Bias from cold to hot, a push-pull pair biased into crossover, RGB against Y/C on
+the same skulls, Mismatch splitting the curve in three, and Rest Level rescuing a
+dark clip — with Show Curve drawing the transfer in the corner throughout. Every
+frame is the real plugin's output: an FFGL plugin has no window, so the footage is
+rendered by this repository's own offline harness (`vatest --pipe`, driven by a cue
+sheet) rather than filmed off a screen, and the clips are Resolume's bundled demo
+media.*
+
 ## Controls
 
 | Group | |
