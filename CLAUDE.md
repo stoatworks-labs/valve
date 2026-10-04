@@ -66,14 +66,14 @@ the chain (`Chain.cpp`), the library GLSL (`Shaders.cpp`) or the parameter enum.
   instantiate the plugin.
 - `valve_core` is an OBJECT library: the registration is a file-scope constructor
   nothing references.
-- Local only: no GitHub repo, not registered in the fleet, never in Resolume.
+- Public repo (`stoatworks-labs/valve`), registered in the fleet: `StoatworksAbout.h`
+  and `ATTRIBUTIONS.md` are generated (sync-about.py, sync-attributions.py) -- edit the
+  masters in stoatworks-backend, never these. "Commit" = commit **and** push.
 
 ## Not done yet
-- Never loaded into Resolume on either platform (oxbow selftest only), never built
-  on Windows, no Arena gate run. No OpenFX port, no browser demo, no user guide.
-- `StoatworksAbout.h` and `ATTRIBUTIONS.md` are PROVISIONAL hand copies
-  (`guide = ""`); registration replaces them with the backend's generated ones
-  (sync-about.py, sync-attributions.py `--adopt`).
+- Never loaded into Resolume on macOS (oxbow selftest only). No OpenFX port, no
+  browser demo. The user guide is `docs/USER-GUIDE.md`; the PDF and the site page are
+  generated from it by the website's `build_guides.py valve`.
 - Time-domain effects (Miller smear, coupling-capacitor blocking, supply sag, the
   output transformer, a tone stack) are not modelled; see AGENTS.md.
 

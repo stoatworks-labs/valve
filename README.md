@@ -139,8 +139,8 @@ cent; the circuit values are typical guitar-amplifier ones, not any one
 amplifier's. The model is memoryless: the coupling capacitors' blocking, the
 Miller capacitance that would smear a 12AX7's output horizontally (and take a
 4.43 MHz chroma carrier out entirely), supply sag and the output transformer
-are not in it. No OpenFX port, no browser demo, no user guide — not in scope for
-0.1.0.
+are not in it. There is a [user guide](https://stoatworks-labs.com/software/valve/guide/).
+No OpenFX port and no browser demo, not in scope for 0.1.0.
 
 ## Build
 
@@ -177,3 +177,7 @@ tools/verify.sh                                        # all of it, on a fresh u
 ## License
 
 MIT. See [LICENSE](LICENSE) and [ATTRIBUTIONS.md](ATTRIBUTIONS.md).
+
+<!-- attributions:start -->
+This project is built on other people's work — see [ATTRIBUTIONS.md](ATTRIBUTIONS.md).
+<!-- attributions:end -->
