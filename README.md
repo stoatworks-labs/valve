@@ -1,32 +1,26 @@
 # valve
 
 > **AI-assisted project.** This codebase was created with [Claude](https://claude.com/claude-code)
-> (Anthropic), directed and reviewed by a human author. The valves are not
-> drawn but solved, and the solution is measured: an offline harness drives
-> the real plugin class in a headless GL context and reads each claim back
-> out of the picture it made — the slope at the operating point is
-> μR_L/(R_L + r_p) for all four preamp valves and the single-ended and
-> push-pull formulas for all four power valves, to five figures; the slope
-> drops by r_g/(r_g + R_s) where the grid starts to conduct, at the column
-> where it should; one valve's H2/H1 is (f″/f′)·a/4; a matched pair makes no
-> second harmonic (4e-8) and twice the mismatch makes twice the H2; a cold
-> pair notches at the centre exactly as the model does; Y/C keeps hue to
-> float precision while RGB turns it by half a radian; Composite's chroma
-> gain follows f′(Y) up a modulated staircase. Eight negative controls and
-> six one-character mutants prove the checks can fail. It has **never been
-> loaded into Resolume on macOS**; on Windows it passed all nine of the fleet
-> Arena gate's checks. On macOS it is loaded by [oxbow](https://github.com/stoatworks-labs/oxbow),
-> which is a real FFGL host and is not Resolume. See [Status](#status).
+> (Anthropic), directed and reviewed by a human author. The valves are solved rather
+> than drawn, and the solution is measured: an offline harness drives the real plugin
+> class in a headless GL context and reads each claim back out of the picture it made,
+> from each valve's gain at its operating point and the grid-current knee to the
+> harmonics, the crossover notch and what happens to hue. Eight negative controls and
+> six one-character mutants show the checks can fail. It has **never been loaded into
+> Resolume on macOS**; on Windows it passed all nine of the fleet Arena gate's checks.
+> On macOS it's loaded by [oxbow](https://github.com/stoatworks-labs/oxbow), which is a
+> proper FFGL host but isn't Resolume. The numbers are under [Status](#status).
 
-The picture through a valve amplifier — run it like a guitar through an
-overdriven amp — as an FFGL effect for [Resolume](https://resolume.com) Arena
-and Avenue.
+Your picture through a valve amplifier, run like a guitar through an overdriven amp, as an
+FFGL effect for [Resolume](https://resolume.com) Arena and Avenue. Turn the drive up and it
+crunches the picture the way an amp crunches a guitar: shadows crushed, highlights hot,
+colour saturated.
 
 ![A kaleidoscopic clip, split down the middle: on the left as it is, dark and soft; on the right through the default valves, its shadows crushed to black, its copper edges driven hot and its blue centre saturated](docs/hero.png)
 
 <sub>One frame of Resolume's bundled clip *IntoTheGlow_02*, rendered by `vatest`,
-the offline harness — not captured from Resolume. Left: the clip. Right: the
-defaults — two 12AX7 stages into a push-pull pair of EL34s, 1.2 V of drive,
+the offline harness, rather than captured from Resolume. Left: the clip. Right: the
+defaults, which are two 12AX7 stages into a push-pull pair of EL34s, 1.2 V of drive,
 resting at 0.3.</sub>
 
 <!-- downloads:start -->
@@ -63,12 +57,12 @@ macOS builds are signed and notarised and open normally. The Windows builds are 
 
 ## The one idea
 
-A valve's transfer curve is not something anybody draws. It is the valve's
-plate-current law meeting the circuit's load line. Put the video level on
-the grid of a real stage — a valve, a plate resistor, a supply, the next
-grid's leak — and solve for the plate voltage. Chain the stages the way a
-guitar amplifier does: preamp triodes, the loss of a tone stack between
-them, a phase inverter, a power pair into an output transformer.
+Nobody draws a valve's transfer curve. It's where the valve's plate-current law
+meets the circuit's load line. Put the video level on the grid of a real stage
+(a valve, a plate resistor, a supply, the next grid's leak) and solve for the plate
+voltage. Then chain the stages the way a guitar amp does: preamp triodes, the loss
+of a tone stack between them, a phase inverter, and a power pair into an output
+transformer.
 
 The valves are Norman Koren's SPICE models (1996), with his parameters:
 the **12AX7, 12AT7, 12AU7 and 6DJ8** for the preamp; the **EL34, 6L6GC, KT88**
@@ -76,14 +70,14 @@ and the **300B** for the power stage.
 
 ## What falls out
 
-None of these is drawn:
+None of this is drawn on:
 
 - **Gain is the operating point's.** A 12AX7 stage has a gain of 59 and
-  clips at a volt; a 12AU7 in the same socket has 13 and stays clean. That is
+  clips at a volt; a 12AU7 in the same socket has 13 and stays clean. That's
   the swap guitarists make, and it works here for the same reason.
 - **The two sides clip differently.** Toward cutoff the current fades
   softly. Past 0 V the grid conducts, loads whatever is driving it, and the
-  stage's slope drops by r_g/(r_g + R_s) — 35 times — at a knee.
+  stage's slope drops by r_g/(r_g + R_s), 35 times, at a knee.
 - **Every stage inverts,** so the asymmetry alternates down a chain, which
   is why two stages sound (look) different from one. As Wired shows the
   inversions: one stage is a negative.
@@ -93,10 +87,10 @@ None of these is drawn:
   pair and it comes back, in proportion.
 - **Bias a pair cold and you get crossover.** At 5 % idle both valves are
   nearly off at rest: the centre of the curve has a third of the slope of
-  its neighbours, a flat step at mid-grey. Bias hotter and it fills in.
-- **Y/C keeps the hue.** Chroma travels as a subcarrier. Through any valve,
-  its amplitude compresses — colour saturates, then limits — but its phase,
-  which is the hue, cannot move. Put RGB through the same valves and every
+  its neighbours, a flat step at mid-grey. Bias it hotter and it fills in.
+- **Y/C keeps the hue.** Chroma travels as a subcarrier. Through any valve
+  its amplitude compresses (colour saturates, then limits), but its phase,
+  which is the hue, can't move. Put RGB through the same valves and every
   channel clips separately, so hues swing toward the primaries.
 - **Composite is differential gain.** Luma and the subcarrier share one
   valve, so the colour's gain is the curve's slope at the brightness it rides
@@ -106,20 +100,19 @@ None of these is drawn:
 
 <sub>Six settings on the harness's card, with Show Curve on: the white curve is
 the picture's transfer, the magenta one (Y/C) the chroma's amplitude, and in
-RGB a mismatch draws three. Rendered by `vatest`; the labels were added
+RGB a mismatch draws three. Rendered by `vatest`, with the labels added
 afterwards.</sub>
 
 [![Valve — overdrive your video through a valve guitar amp, for Resolume](docs/video-thumb.png)](https://www.youtube.com/watch?v=DM2kHbvMlJw)
 
-*[Watch it](https://www.youtube.com/watch?v=DM2kHbvMlJw) — 58 seconds:
+*[Watch it](https://www.youtube.com/watch?v=DM2kHbvMlJw) (58 seconds):
 Drive from clean to fuzz, the 12AX7-for-12AU7 swap, one preamp stage to four,
 Bias from cold to hot, a push-pull pair biased into crossover, RGB against Y/C on
 the same skulls, Mismatch splitting the curve in three, and Rest Level rescuing a
-dark clip — with Show Curve drawing the transfer in the corner throughout. Every
-frame is the real plugin's output: an FFGL plugin has no window, so the footage is
-rendered by this repository's own offline harness (`vatest --pipe`, driven by a cue
-sheet) rather than filmed off a screen, and the clips are Resolume's bundled demo
-media.*
+dark clip, with Show Curve drawing the transfer in the corner throughout. It's all
+the plugin's own output. An FFGL plugin doesn't have a window to film, so the footage
+comes from this repo's offline harness (`vatest --pipe`, driven by a cue sheet) rather
+than a screen, and the clips are Resolume's bundled demo media.*
 
 ## Controls
 
@@ -131,19 +124,19 @@ media.*
 | **Output** | Output (Fit: black stays black and white stays white; Unity: the operating point's small-signal gain is 1, so drive compresses; Plate: the plate's own volts over its supply), Polarity (Corrected / As Wired), Show Curve, Mix |
 
 Start with **Drive**, then **Stages** and **Preamp**. Turn **Rest Level** down
-when a clip is dark and everything goes to black; that is the shadows
+when a clip is dark and everything goes to black: that's the shadows
 sitting in the valve's cutoff.
 
 ## Status
 
-**v0.1.0, and honestly early — 4 October 2026.**
+**v0.1.0, 4 October 2026, and still early days.**
 
 ### Measured offline, on macOS
 
-`tools/verify.sh` passes on this machine (M4 Max, macOS 26.4.1) against a fresh
-universal Release build, running every rendered check at **two rasters**,
+`tools/verify.sh` passes on this Mac (M4 Max, macOS 26.4.1) against a fresh
+universal Release build. It runs every rendered check at **two rasters**,
 320×180 and 1280×720, and again on **Apple's software renderer** at 320×180.
-Numbers below are at 1280×720.
+The numbers below are at 1280×720.
 
 | check | result |
 | --- | --- |
@@ -163,38 +156,38 @@ Numbers below are at 1280×720.
 | `tools/sweep.py` | all **24** controls measurably change the picture |
 | the bundle | universal (`x86_64 arm64`), exports `plugMain`, ad-hoc signs; `oxbow` reports `SW Valve` / `VA01` / `effect` and renders 120 frames through `plugMain` |
 
-Render cost, GPU timer queries, median of 60 frames, on a GPU shared with
-other builds (the figures move by up to 2× between runs): **0.1–0.2 ms** at
-720p and 1080p, **0.55 ms** at 4K for the defaults; Y/C and Composite add a
+Render cost (GPU timer queries, median of 60 frames, on a GPU shared with
+other builds, so the figures move by up to 2× between runs): **0.1–0.2 ms** at
+720p and 1080p and **0.55 ms** at 4K for the defaults; Y/C and Composite add a
 small describing-function pass, **0.9 ms** at 4K at most. Solving the tables
 again when a valve, bias or mismatch setting moves costs about **10 ms** on the
 CPU for a whole chain (only the stages a setting touches are re-solved);
-Drive, Master, Interstage, Stages and Rest Level cost nothing. macOS figures
-only.
+Drive, Master, Interstage, Stages and Rest Level cost nothing. These are macOS
+figures only.
 
 ### Not established
 
 It has **never been loaded into Resolume on macOS**. Everything above was
 compiled, rendered and measured offline against the real plugin class in a
-headless CGL context, plus an `oxbow` load. On Windows, a build of this source
+headless CGL context, plus a load in `oxbow`. On Windows, a build of this source
 passed all 9 of the fleet Arena gate's checks on win-lab (Resolume Arena 7.27.1,
 Mesa llvmpipe, no GPU, 2026-10-04): it loads from Extra Effects, registers as
 `SW Valve` / `VA01` / effect, all 30 host controls match the declaration (the two
 names at exactly 16 characters arrive whole), it renders, every control (and Resolume's own
 Opacity: 25) moves the picture, and Arena's log stays clean. Software rendering says
-nothing about a GPU or about speed. How it looks on real footage at a show, how
-the controls read in Arena's inspector on macOS, and whether a 10 ms table solve
-is noticed while dragging Bias are untested. Koren's models are fits to published curves, good to a few per
-cent; the circuit values are typical guitar-amplifier ones, not any one
+nothing about a GPU or about speed. I haven't tested how it looks on real footage at a
+show, how the controls read in Arena's inspector on macOS, or whether a 10 ms table solve
+is noticeable while you drag Bias. Koren's models are fits to published curves, good to a
+few per cent, and the circuit values are typical guitar-amp ones rather than any one
 amplifier's. The model is memoryless: the coupling capacitors' blocking, the
 Miller capacitance that would smear a 12AX7's output horizontally (and take a
 4.43 MHz chroma carrier out entirely), supply sag and the output transformer
-are not in it. There is a [user guide](https://stoatworks-labs.com/software/valve/guide/).
-No OpenFX port and no browser demo, not in scope for 0.1.0.
+aren't in it. There's a [user guide](https://stoatworks-labs.com/software/valve/guide/).
+No OpenFX port and no browser demo, as neither was in scope for 0.1.0.
 
 ## Build
 
-Needs CMake 3.15+, a C++17 compiler, and the FFGL SDK submodule.
+You'll need CMake 3.15+, a C++17 compiler and the FFGL SDK submodule.
 
 ```bash
 git clone --recursive https://github.com/stoatworks-labs/valve
@@ -205,7 +198,7 @@ cmake --install build     # into ~/Documents/Resolume Arena/Extra Effects
 ```
 
 macOS builds are universal (Apple Silicon + Intel) by default; add
-`-DCMAKE_OSX_ARCHITECTURES=arm64` for a faster dev build. Windows needs GLEW via vcpkg.
+`-DCMAKE_OSX_ARCHITECTURES=arm64` for a quicker dev build. Windows needs GLEW via vcpkg.
 
 ## Building and testing
 
