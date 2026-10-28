@@ -183,7 +183,25 @@ amplifier's. The model is memoryless: the coupling capacitors' blocking, the
 Miller capacitance that would smear a 12AX7's output horizontally (and take a
 4.43 MHz chroma carrier out entirely), supply sag and the output transformer
 aren't in it. There's a [user guide](https://stoatworks-labs.com/software/valve/guide/).
-No OpenFX port and no browser demo, as neither was in scope for 0.1.0.
+No OpenFX port, as it wasn't in scope for 0.1.0. There is a
+[browser demo](#browser-demo) now.
+
+## Browser demo
+
+**<https://valve-demo.stoatworks-labs.com/>** — every control with its own name, group and
+default. The describing-function and display passes are the plugin's own GLSL, spliced
+unedited into `demo/shaders.js` (`demo/tools/check_shaders.py`, run by `tools/verify.sh`,
+fails on a changed character). The CPU half is a JavaScript port: Koren's valves, the load
+lines and operating points (`Valves.cpp`), the warped tables and the normalisation
+(`Chain.cpp`), the control laws, and the frame's uniforms. `demo/tools/crosscheck/` drives
+the **real plugin class** in a GL context through 102 settings and requires the port to
+print the same tables, operating points, normalisation and uniforms (read back out of the
+plugin's programs), to the bit once the plugin's libm results are replayed into it; on the
+browser's own Math every float the GPU reads is still identical. Thirteen frames compared
+with `vatest` on the same input came out pixel for pixel the same but for one alpha-edge
+pixel. It needs WebGL2 with `EXT_color_buffer_float` and a 4,097-texel-wide texture. Stages
+is a dropdown of its five values. It's a demo, not the plugin, and the page says what it
+doesn't reproduce.
 
 ## Build
 

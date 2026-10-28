@@ -320,7 +320,11 @@ shader failed if one did.
   driven into hard clipping.
 - **Checked at up to 1280×720**, and timed at 4K. **Only ever run on an Apple M4 Max**, although
   the macOS build has an Intel slice in it.
-- **No presets, no audio input**, no OpenFX version and no browser demo.
+- **No presets, no audio input** and no OpenFX version.
+- **There's a browser demo** at [valve-demo.stoatworks-labs.com](https://valve-demo.stoatworks-labs.com).
+  It's a port to a web page rather than the plugin itself: the shaders run in WebGL2 unedited,
+  and the valve solver is rewritten in JavaScript, which a check in the repository holds to
+  the plugin's own C++. The page lists what it doesn't reproduce.
 
 ---
 

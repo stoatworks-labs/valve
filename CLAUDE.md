@@ -26,8 +26,9 @@ the chain (`Chain.cpp`), the library GLSL (`Shaders.cpp`) or the parameter enum.
   up exits 1 (SIGPIPE is ignored), never a silent 141.
 
 ## Verify
-- Everything: `tools/verify.sh` (~3 min: reserved words, no trig in the GLSL, the
-  SDK pin, a fresh universal build with no warnings, glslc, the offline set, every
+- Everything: `tools/verify.sh` (~5 min: reserved words, no trig in the GLSL, the
+  SDK pin, a fresh universal build with no warnings, glslc, the browser demo's shader
+  copies and its port's crosscheck, the offline set, every
   rendered check at 320x180 and 1280x720, the same on Apple's software renderer,
   the mutants, the `--pipe` contract, the sweep, the bench, the bundle, oxbow).
 - The physics: `--gain`, `--knee`, `--harmonics`, `--crossover`, `--hue`, `--dg`.
@@ -70,10 +71,30 @@ the chain (`Chain.cpp`), the library GLSL (`Shaders.cpp`) or the parameter enum.
   and `ATTRIBUTIONS.md` are generated (sync-about.py, sync-attributions.py) -- edit the
   masters in stoatworks-backend, never these. "Commit" = commit **and** push.
 
+## Browser demo
+- `demo/` is the page at https://valve-demo.stoatworks-labs.com (Cloudflare Worker
+  `valve-demo`, a ROUTE on a proxied AAAA 100:: record -- the zone's custom domains are
+  full; deleting the record takes the page dark with a green deploy). `deploy.yml`
+  redeploys it on a push to main; by hand: `cf-run npx wrangler deploy`.
+- `demo/shaders.js` is GENERATED: after changing `source/Shaders.cpp` run
+  `python3 demo/tools/check_shaders.py --write`; verify.sh fails on drift, on a new piece
+  the check does not list, and on a change to how pieces are joined.
+- `demo/plugin.js`'s PORT block (Valves, Chain, Controls, and Valve.cpp's constructor,
+  currentSettings and ProcessOpenGL's uniforms as `Frame()`) is held to the REAL plugin
+  class by `demo/tools/crosscheck/crosscheck.sh` (verify.sh runs it; needs node, the
+  submodule and a GL context, ~90 s): change the C++ and the port with it. A new uniform
+  needs a line in `printer.cpp` and `run.mjs`, or the check never sees it.
+- The check replays the plugin's own libm results into the port (`libm_record.c`,
+  interposed with DYLD_INSERT_LIBRARIES) and builds the C++ `-ffp-contract=off`; without
+  both, V8's Math and arm64's fused multiply-adds move the doubles' last bits.
+- Pixels against `vatest`: AGENTS.md, "The browser demo" (`renderer.capture`).
+- `demo/vendor/` is the shared kit: never edit it, re-vendor with
+  `stoatworks-backend/resolume-demo/sync.sh`.
+
 ## Not done yet
 - Never loaded into Resolume on macOS (oxbow selftest only); on Windows the fleet
-  Arena gate passed 9/9 on win-lab (plugin-bench `arena/expect/valve.json`). No OpenFX port, no
-  browser demo. The user guide is `docs/USER-GUIDE.md`; the PDF and the site page are
+  Arena gate passed 9/9 on win-lab (plugin-bench `arena/expect/valve.json`). No OpenFX port.
+  The user guide is `docs/USER-GUIDE.md`; the PDF and the site page are
   generated from it by the website's `build_guides.py valve`.
 - Time-domain effects (Miller smear, coupling-capacitor blocking, supply sag, the
   output transformer, a tone stack) are not modelled; see AGENTS.md.

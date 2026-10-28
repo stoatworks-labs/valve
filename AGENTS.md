@@ -187,6 +187,68 @@ rendered check runs at 320×180 and 1280×720 and on Apple's software renderer.
   above the 63rd alias into the describing function. `--hue` bounds the 64-tap
   error against 4096 taps at its drive; a fuzz-level chroma chain is not bounded.
 
+## The browser demo (2026-10-28)
+
+`demo/` is <https://valve-demo.stoatworks-labs.com>, built to the fleet's `resolume-demo`
+kit rules (`~/Projects/resolume/specs/DEMO-BRIEF.md`) in the 2026-10-28 demo sweep. What a
+reader of it must know:
+
+- **The shaders are the plugin's**, all six pieces (kVertex, kLibrary, the tables pass's
+  head and body, the display's head and body), spliced by
+  `demo/tools/check_shaders.py --write` into `demo/shaders.js` and compared character for
+  character. It also fails on a piece it does not list and on a change to the JOIN on
+  either side (`TablesSource()`/`DisplaySource()`, InitGL's two stages, plugin.js's copy).
+  Both programs compile and link in WebGL2 as spliced (ANGLE on Metal, M4 Max; and
+  SwiftShader). Every uniform the plugin sets is active in both.
+- **The CPU half is a port, held to the C++ to the bit.** `demo/plugin.js`'s PORT block is
+  Valves.cpp, Chain.cpp, Controls.cpp, and Valve.cpp's constructor (names, groups,
+  defaults), `currentSettings` and ProcessOpenGL's CPU half, written as `Frame()`, which
+  RETURNS each pass's uniforms so the GL code only binds them. `demo/tools/crosscheck/`
+  drives the REAL `Valve` class in a CGL context through `scenario.mjs`'s 102 settings
+  (every menu entry, sliders across their range and back, the chroma chain in Y/C,
+  chains with no preamp, a second raster, ten seeded random settings; the ORDER exercises
+  Update's re-solve-only-what-moved keys) and prints the declarations, the settings, every
+  operating point, every table row (in full whenever it changes), the normalisation, the
+  chain at fixed points, and every uniform of both programs read back with glGetUniform.
+  `run.mjs` runs the PORT block through the same. With the plugin's libm calls recorded
+  (`libm_record.c`, DYLD_INSERT_LIBRARIES) and replayed into the port (23.5 million; the
+  64 cosines of the subcarrier table are folded at build time, fall back to V8 and still
+  agree) and the C++ built `-ffp-contract=off`, all 36,611 lines are identical. On V8's
+  own Math every table float, warp and uniform is still identical; the CPU's doubles
+  drift by a few ulps, or a few thousand where a Newton solve stops at its 1e-13. The
+  arm64 build (fused multiply-adds) hands the GPU the same floats too here; reported, not
+  required. About 90 s and ~1.3 GB of node heap.
+- **The checks can fail.** Port mutants, each caught by the crosscheck: the input stopper
+  68 k → 68.1 k (3,637 lines), the lookup's `trunc` → `round` (1,881), the push-pull
+  `c1.ip - c2.ip` → `+` (9,478), BT.601's V 0.877283 → 0.877284 (284), the second preamp
+  table built only from three stages (36,317). `left + right` → `right + left` in Slope
+  survives, as it must: IEEE addition commutes. One shader character changed in
+  `demo/shaders.js` fails check_shaders.
+- **Pixels, once, by hand** (not in verify.sh: it needs Chrome). `window.valveDemo.renderer
+  .capture = cb` hands `cb` the next frame's input and output as RGBA8, rows bottom-up;
+  the input flipped to top-down goes to `vatest --clip`. At 320 × 180, thirteen cases
+  (defaults on the scene; Y/C, Composite, mismatch into a single-ended 300B, a cold pair,
+  Plate as wired, Unity on a 6DJ8, four stages with Show Curve, Y/C with a chroma power
+  pair, Composite with Show Curve, the alpha clip three ways) on headless Chrome's
+  SwiftShader: twelve identical in every pixel, the thirteenth (the alpha clip at
+  defaults) one pixel one level off on its premultiplied edge. Four of them again on the
+  M4 Max through ANGLE Metal: identical. No other GPU or browser has run it.
+- **What the page cannot do the plugin's way**, and says: Stages and Chroma Stages are
+  FF_TYPE_INTEGER, here dropdowns of 0–4 (the element index IS the integer); the About
+  block is not on the panel; the Presets menu is the page's (after the README's curves
+  figure); the perturbation hooks are not ported and `Perturb` is sent as 0. It needs
+  `EXT_color_buffer_float` (the 256 × 65 RGBA32F describing-function target) and
+  MAX_TEXTURE_SIZE ≥ 4097, and stops with a GLError naming either rather than shrink
+  anything. A table solve here took 11–22 ms for the defaults' four rows on the M4 Max.
+- The status line under the picture is the port's own operating point: the 12AX7's stage
+  gain reads −58.9 and the 12AU7's −13.1, the README's `--gain` figures.
+- Traps: in this shell's interactive profile `cc` is a shell function (crosscheck.sh
+  defaults CC/CXX to /usr/bin); clang turns `std::pow( 10.0, x )` into `__exp10` on
+  Darwin, so the recorder interposes it; `log1p( -0 )` is -0, so the replay keys -0 apart
+  from +0.
+- `stoatworks-backend/resolume-demo/sync.sh` did not list valve when this was written;
+  the sweep's coordinator adds it. Re-vendor from there, never edit `demo/vendor/`.
+
 ## Not done
 
 - Never loaded into Resolume on macOS. On Windows the fleet Arena gate passed 9/9 on
@@ -194,8 +256,9 @@ rendered check runs at 320×180 and 1280×720 and on Apple's software renderer.
   truncation check SKIPPED until the expectation recorded the two names at exactly
   16 characters as `declared`. The renamed chroma controls (`Chroma Pwr ...`) exist
   because a host gets only 16 characters of a parameter's name.
-- No OpenFX port and no browser demo. (Released as v0.1.0 on 2026-10-04 with a user
-  guide; `StoatworksAbout.h` and `ATTRIBUTIONS.md` are generated by the backend now.)
+- No OpenFX port. (Released as v0.1.0 on 2026-10-04 with a user guide;
+  `StoatworksAbout.h` and `ATTRIBUTIONS.md` are generated by the backend now. The browser
+  demo came later, on 2026-10-28: see below.)
 - The time-domain mechanisms, each the obvious next version: the **Miller pole**
   (C_in = C_gk + (1 + A) C_gp: a 12AX7 smears to the right, a 12AU7 barely, and
   colour dies first — a blocked linear scan per stage, as clamp does its RC);
