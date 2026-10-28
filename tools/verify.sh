@@ -18,7 +18,11 @@
 #   shaders       does every shader compile, through a real GLSL compiler
 #                 (tools/check-shaders.sh, which CI runs too), on the exact
 #                 strings `vatest --dump-shaders` writes.
-#   offline       the checks that need no GL, and their negative control:
+#   demo          the browser demo's shaders are the plugin's, character for
+#                 character (demo/tools/check_shaders.py), and its JavaScript
+#                 port of the CPU half prints what the real plugin class prints
+#                 (demo/tools/crosscheck/crosscheck.sh).
+#   offline      the checks that need no GL, and their negative control:
 #                   --model     the valves against Koren's Tube.lib, his law
 #                               restated, every operating point and load
 #                               line against the harness's own solves, the
@@ -119,6 +123,45 @@ if out=$(tools/check-shaders.sh "$VATEST" 2>&1); then
 else
 	fail "a shader does not compile"
 	printf '%s\n' "$out"
+fi
+
+#---------------------------------------------------------------------------
+# The browser demo (demo/). Its shaders are copies of source/Shaders.cpp, and a
+# copy that drifts still crushes a picture plausibly, so the drift has to fail
+# here: rerun `python3 demo/tools/check_shaders.py --write` after changing a
+# shader. Its CPU half is a JavaScript port of Valves.cpp, Chain.cpp,
+# Controls.cpp and Valve.cpp's frame logic, held to the real plugin class by
+# demo/tools/crosscheck/ (needs node; about a minute and a half).
+#---------------------------------------------------------------------------
+step "browser demo's shaders"
+if [ -f demo/tools/check_shaders.py ]; then
+	if out=$(python3 demo/tools/check_shaders.py 2>&1); then
+		pass "$( printf '%s\n' "$out" | tail -1 )"
+	else
+		printf '%s\n' "$out" | tail -14
+		fail "the demo's shaders have drifted from source/Shaders.cpp"
+	fi
+elif [ -d demo ]; then
+	fail "demo/ exists but demo/tools/check_shaders.py does not"
+else
+	echo "   skipped: no demo/"
+fi
+
+step "browser demo's port of the CPU half"
+if [ -f demo/tools/crosscheck/crosscheck.sh ]; then
+	if ! command -v node >/dev/null 2>&1; then
+		echo "   skipped: no node on this machine"
+	elif out=$(bash demo/tools/crosscheck/crosscheck.sh 2>&1); then
+		printf '%s\n' "$out" | sed 's/^/   /'
+		pass "the port prints what the plugin prints"
+	else
+		printf '%s\n' "$out" | tail -14
+		fail "the demo's port of the CPU half has drifted from the plugin's C++"
+	fi
+elif [ -d demo ]; then
+	fail "demo/ exists but demo/tools/crosscheck/crosscheck.sh does not"
+else
+	echo "   skipped: no demo/"
 fi
 
 #---------------------------------------------------------------------------

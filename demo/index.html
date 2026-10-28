@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Valve — browser demo | Stoatworks Labs</title>
+    <meta name="description" content="Try the Valve FFGL effect for Resolume in your browser: your picture through an overdriven valve guitar amplifier, shadows crushed and highlights hot. Koren's models of the 12AX7, 12AT7, 12AU7, 6DJ8, EL34, 6L6GC, KT88 and 300B solved on their load lines. The plugin's own two GLSL passes, ported to WebGL2 unedited, reading valve curves solved in the page by a JavaScript port of its CPU half that a check in its repository holds to the plugin's C++. A demo, not the plugin." />
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="./vendor/kit.css" />
+    <link rel="canonical" href="https://valve-demo.stoatworks-labs.com/" />
+  </head>
+  <body>
+    <main id="demo">
+      <noscript>
+        <p>
+          This demo runs the plugin's shaders and a port of its CPU half in your
+          browser, so it needs JavaScript and WebGL2. The plugin itself, its
+          source and its downloads are on
+          <a href="https://github.com/stoatworks-labs/valve">its repository</a>.
+        </p>
+      </noscript>
+    </main>
+
+    <script type="module" src="./plugin.js"></script>
+    <script
+      src="./vendor/support-footer.js"
+      defer
+      data-app="Valve"
+      data-repo="https://github.com/stoatworks-labs/valve"
+      data-note="A browser demo of the plugin's shaders over a port of its CPU half. Nothing you load here leaves your machine."
+    ></script>
+  </body>
+</html>
